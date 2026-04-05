@@ -1,0 +1,8 @@
+node_modules
+.git
+training.db
+uploads
+.env.local
+.env
+.DS_Store
+*.log

@@ -1,7 +1,33 @@
-node_modules/
+# Local environment variables
+.env.local
+.env
+
+# Database (local)
 training.db
-uploads/
+
+# Node modules
+node_modules/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
 .DS_Store
+Thumbs.db
+
+# Logs
+logs/
 *.log
 npm-debug.log*
-.env
+yarn-debug.log*
+yarn-error.log*
+
+# Uploads (local)
+uploads/
+
+# Vercel
+.vercel/
