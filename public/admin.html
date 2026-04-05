@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Training Management System</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="navbar">
+    <div class="nav-container">
+      <h1>Training Management System - Admin Panel</h1>
+      <div class="nav-links">
+        <a href="admin.html" class="active">Admin</a>
+        <a href="learner.html">Learner</a>
+        <a href="analytics.html">Analytics</a>
+        <a href="calendar.html">Calendar</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab-button active" onclick="switchTab('learning-points')">Learning Points</button>
+      <button class="tab-button" onclick="switchTab('training-sessions')">Training Sessions</button>
+      <button class="tab-button" onclick="switchTab('tasks')">Tasks</button>
+    </div>
+
+    <!-- Learning Points Section -->
+    <div id="learning-points" class="tab-content active">
+      <h2>Create Learning Points</h2>
+      <form id="learning-point-form" class="form">
+        <div class="form-group">
+          <label for="type">Type (Required) * - Select one or more</label>
+          <select id="type" multiple required>
+            <option value="Sr App">Sr App</option>
+            <option value="Manager App">Manager App</option>
+            <option value="Web App">Web App</option>
+            <option value="Scenario Based">Scenario Based</option>
+          </select>
+          <small style="color: #666; margin-top: 5px; display: block;">💡 Tip: Hold Ctrl (Windows) or Cmd (Mac) to select multiple types</small>
+        </div>
+
+        <div class="form-group">
+          <label for="module_name">Task/Module Name (Required) *</label>
+          <input type="text" id="module_name" placeholder="Enter module name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description (Optional)</label>
+          <textarea id="description" placeholder="Enter description..." rows="4"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create Learning Point</button>
+      </form>
+
+      <h3>Existing Learning Points</h3>
+      <div id="learning-points-list" class="list-container">
+        <p>Loading...</p>
+      </div>
+    </div>
+
+    <!-- Training Sessions Section -->
+    <div id="training-sessions" class="tab-content">
+      <h2>Create Training Session</h2>
+      <form id="training-session-form" class="form">
+        <div class="form-group">
+          <label for="learning_point_id">Select Learning Point (Required) *</label>
+          <select id="learning_point_id" required>
+            <option value="">-- Select Learning Point --</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="session_date">Session Date & Time (Required) *</label>
+          <input type="datetime-local" id="session_date" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create Session</button>
+      </form>
+
+      <h3>Active Training Sessions</h3>
+      <div id="training-sessions-list" class="list-container">
+        <p>Loading...</p>
+      </div>
+    </div>
+
+    <!-- Tasks Section -->
+    <div id="tasks" class="tab-content">
+      <h2>Create Task</h2>
+      <form id="task-form" class="form">
+        <div class="form-group">
+          <label for="session_id">Select Training Session (Optional)</label>
+          <select id="session_id">
+            <option value="">-- Independent Task --</option>
+          </select>
+          <small style="color: #666; margin-top: 5px; display: block;">Leave blank to assign an independent task without a session.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="task_name">Task Name (Required) *</label>
+          <input type="text" id="task_name" placeholder="Enter task name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="task_description">Description (Optional)</label>
+          <textarea id="task_description" placeholder="Enter task description..." rows="4"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="deadline">Deadline (Required) *</label>
+          <input type="datetime-local" id="deadline" required>
+        </div>
+
+        <div class="form-group">
+          <label for="assigned_to">Assign To (Required) * - Select one or more</label>
+          <select id="assigned_to" multiple required>
+            <option value="Mahi">Mahi</option>
+            <option value="Saimom">Saimom</option>
+            <option value="Moushumi">Moushumi</option>
+          </select>
+          <small style="color: #666; margin-top: 5px; display: block;">💡 Tip: Hold Ctrl (Windows) or Cmd (Mac) to select multiple people</small>
+        </div>
+
+        <div class="form-group">
+          <label for="task_attachment">Attachment (Optional)</label>
+          <input type="file" id="task_attachment">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create Task</button>
+      </form>
+
+      <h3>All Tasks</h3>
+      <div id="tasks-list" class="list-container">
+        <p>Loading...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Participant Selection Modal -->
+  <div id="participant-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeParticipantModal()">&times;</span>
+      <h2>Add Participants to Session</h2>
+      <p style="color: #666; margin-bottom: 20px;">Select one or more participants to add to this training session</p>
+      
+      <div id="participant-list" class="checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" value="Mahi" class="participant-checkbox">
+          <span>Mahi</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" value="Saimom" class="participant-checkbox">
+          <span>Saimom</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" value="Moushumi" class="participant-checkbox">
+          <span>Moushumi</span>
+        </label>
+      </div>
+
+      <div style="margin-top: 20px; margin-bottom: 20px;">
+        <label style="display: block; margin-bottom: 10px; font-weight: 600;">Add Custom Participant (Optional)</label>
+        <input type="text" id="custom-participant" placeholder="Enter custom name (e.g., John, Sarah, etc.)" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+        <button type="button" class="btn btn-secondary btn-small" onclick="addCustomParticipant()" style="margin-top: 8px;">Add Custom</button>
+      </div>
+
+      <div style="margin-top: 25px; display: flex; gap: 10px; justify-content: flex-end;">
+        <button class="btn btn-secondary" onclick="closeParticipantModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="addSelectedParticipants()">Add Selected</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

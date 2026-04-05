@@ -1,0 +1,251 @@
+# QUICK REFERENCE CARD
+
+## 🚀 Starting Your System
+
+**EASIEST METHOD:**
+1. Find **START.bat** in your folder
+2. Double-click it
+3. Wait for success message
+4. Browser opens automatically
+5. Go to **Admin Panel**
+
+---
+
+## 📊 ADMIN PANEL - What You Do
+
+### Create Learning Point
+**Where:** Learning Points tab
+- **Type:** Pick Sr App / Manager App / Web App / Scenario Based
+- **Module Name:** What you want to teach
+- **Description:** (Optional) Details about it
+
+### Create Training Session  
+**Where:** Training Sessions tab
+- **Learning Point:** Which module?
+- **Date & Time:** When?
+- **Add Participants:** Click button, type names
+
+### Create Tasks
+**Where:** Tasks tab
+- **Session:** Which training?
+- **Task Name:** What to do?
+- **Description:** How to do it?
+- **Deadline:** When due?
+- **Assign To:** Who does it?
+- **Attachment:** (Optional) Attach file
+
+---
+
+## 👤 LEARNER DASHBOARD - What Your Team Does
+
+**Where:** http://localhost:3000/learner.html
+
+1. Click their name (Mahi, Saimom, Moushumi)
+2. See all their tasks
+3. Click task to see details
+4. Click "Update Task" to change status:
+   - Pending → In Progress → Completed
+5. See personal stats
+
+---
+
+## 📈 ANALYTICS - What You Monitor
+
+**Where:** http://localhost:3000/analytics.html
+
+See:
+- Total sessions completed
+- Total tasks completed  
+- Completion rate per person
+- Average days to complete
+- All tasks in one table
+
+---
+
+## 🔑 Default Team Members
+
+```
+Mahi, Saimom, Moushumi
+```
+
+Add more by editing HTML files (see CUSTOMIZATION.md)
+
+---
+
+## 📁 Important Files
+
+| File | Purpose |
+|------|---------|
+| START.bat | **Click to start system** |
+| training.db | Your data (auto-created) |
+| README.md | Full documentation |
+| TUTORIAL.md | Step-by-step guide |
+
+---
+
+## ⌨️ Keyboard Shortcuts
+
+| Shortcut | Does |
+|----------|------|
+| **F5** | Refresh page |
+| **Ctrl+R** | Refresh page |
+| **Ctrl+C** (Terminal) | Stop the system |
+| **Enter** | Submit form |
+| **Escape** | Close popup |
+
+---
+
+## 🔄 Workflow - Every Week
+
+### Monday: Create Training
+- [ ] Create Learning Point
+- [ ] Create Training Session
+- [ ] Add Participants
+
+### Tuesday: Assign Tasks
+- [ ] Create 2-3 Tasks
+- [ ] Assign to team members
+- [ ] Set reasonable deadlines
+
+### Wednesday-Friday: Monitor
+- [ ] Check Analytics
+- [ ] See who's completing
+- [ ] Send reminders
+
+### Next Week: Plan Next Training
+- [ ] Review completion rates
+- [ ] Get team feedback
+- [ ] Create new learning module
+
+---
+
+## ✅ Checklist for First Time
+
+- [ ] Double-click START.bat
+- [ ] Wait for success message
+- [ ] Open Admin Panel
+- [ ] Create 1 Learning Point
+- [ ] Create 1 Training Session
+- [ ] Add 1 Participant
+- [ ] Create 1 Task
+- [ ] Go to Learner Dashboard
+- [ ] View the task as learner
+- [ ] Check Analytics
+
+**Done?** You're an expert! 🎉
+
+---
+
+## 🆘 Quick Fixes
+
+| Problem | Fix |
+|---------|-----|
+| App won't start | Restart computer, run npm install again |
+| Page not loading | Ctrl+R refresh, check Terminal shows "running" |
+| Data disappeared | Delete training.db, restart |
+| Can't find START.bat | It's in D:\Training Test folder |
+| Names not showing | Restart browser, press F5 |
+
+---
+
+## 🌐 URLs
+
+```
+Home:          http://localhost:3000
+Admin:         http://localhost:3000/admin.html
+Learner:       http://localhost:3000/learner.html
+Analytics:     http://localhost:3000/analytics.html
+```
+
+---
+
+## 📝 Form Fields Guide
+
+### Learning Point Form
+- **Type** (required): Sr App, Manager App, Web App, or Scenario Based
+- **Module Name** (required): What you call this training
+- **Description** (optional): Extra details
+
+### Training Session Form
+- **Learning Point** (required): Which module?
+- **Date & Time** (required): When is it?
+
+### Task Form
+- **Session** (required): Which training?
+- **Task Name** (required): Title of task
+- **Description** (optional): What to do
+- **Deadline** (required): When due?
+- **Assign To** (required): Who does it?
+- **Attachment** (optional): Upload file
+
+---
+
+## 💡 Pro Tips
+
+1. **Start small** - Create 1 module, 1 session, 1 task first
+2. **Use realistic deadlines** - Don't rush your team
+3. **Attach materials** - Help your team by providing files
+4. **Check analytics weekly** - See who needs support
+5. **Get feedback** - Ask your team if system is easy
+6. **Plan ahead** - Create training for next week today
+
+---
+
+## 🎓 Three Team Members Ready
+
+Can use them as-is or change names in:
+- **public/admin.html** (assigned_to dropdown)
+- **public/learner.html** (person selector buttons)
+
+See CUSTOMIZATION.md for details
+
+---
+
+## 🔐 Your Data
+
+- Stored in **training.db** file
+- In your **D:\Training Test** folder
+- Stays even after you close browser
+- Backup by copying this file
+- Reset by deleting this file
+
+---
+
+## 📞 Documentation
+
+- **START_HERE.md** ← Read first!
+- **QUICK_START.md** ← Installation help
+- **TUTORIAL.md** ← Step-by-step walkthrough
+- **README.md** ← Complete reference
+- **CUSTOMIZATION.md** ← Customize team
+
+---
+
+## ✨ Feature Summary
+
+✅ Create learning modules/points  
+✅ Schedule training sessions  
+✅ Add unlimited participants  
+✅ Create tasks with deadlines  
+✅ Attach files to tasks  
+✅ Team can view & update tasks  
+✅ Analytics & progress tracking  
+✅ Beautiful, responsive design  
+✅ All data saved automatically  
+✅ Works on any browser
+
+---
+
+## 🎯 Today's Goal
+
+1. **Open** Computer
+2. **Find** D:\Training Test folder
+3. **Double-click** START.bat
+4. **Create** one Learning Point
+5. **Success!** 🎉
+
+---
+
+**Print this card and keep it handy!**
+
+*You're ready to train your team!* 💪

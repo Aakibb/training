@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learner Dashboard - Training Management System</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="navbar">
+    <div class="nav-container">
+      <h1>Training Management System - Learner Dashboard</h1>
+      <div class="nav-links">
+        <a href="admin.html">Admin</a>
+        <a href="learner.html" class="active">Learner</a>
+        <a href="analytics.html">Analytics</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="learner-section">
+      <h2>Select Your Name</h2>
+      <div class="person-selector">
+        <button class="person-btn" onclick="selectPerson('Mahi')">Mahi</button>
+        <button class="person-btn" onclick="selectPerson('Saimom')">Saimom</button>
+        <button class="person-btn" onclick="selectPerson('Moushumi')">Moushumi</button>
+      </div>
+
+      <div id="person-content" style="display: none;">
+        <h2>My Tasks - <span id="person-name"></span></h2>
+        
+        <div class="stats-container">
+          <div class="stat-card">
+            <h3>Total Tasks</h3>
+            <p id="total-tasks">0</p>
+          </div>
+          <div class="stat-card">
+            <h3>Completed</h3>
+            <p id="completed-tasks">0</p>
+          </div>
+          <div class="stat-card">
+            <h3>Pending</h3>
+            <p id="pending-tasks">0</p>
+          </div>
+          <div class="stat-card">
+            <h3>In Progress</h3>
+            <p id="in-progress-tasks">0</p>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab-button active" onclick="switchTaskTab('all-tasks')">All Tasks</button>
+          <button class="tab-button" onclick="switchTaskTab('pending-tasks')">Pending</button>
+          <button class="tab-button" onclick="switchTaskTab('completed-tasks')">Completed</button>
+        </div>
+
+        <div id="all-tasks" class="tab-content active">
+          <h3>All My Tasks</h3>
+          <div id="all-tasks-list" class="tasks-list">
+            <p>No tasks assigned</p>
+          </div>
+        </div>
+
+        <div id="pending-tasks" class="tab-content">
+          <h3>Pending Tasks</h3>
+          <div id="pending-tasks-list" class="tasks-list">
+            <p>No pending tasks</p>
+          </div>
+        </div>
+
+        <div id="completed-tasks" class="tab-content">
+          <h3>Completed Tasks</h3>
+          <div id="completed-tasks-list" class="tasks-list">
+            <p>No completed tasks</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for task details -->
+  <div id="task-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeTaskModal()">&times;</span>
+      <h2 id="modal-task-name"></h2>
+      <div class="modal-body">
+        <p><strong>Module:</strong> <span id="modal-module-name"></span></p>
+        <p><strong>Description:</strong> <span id="modal-description"></span></p>
+        <p><strong>Deadline:</strong> <span id="modal-deadline"></span></p>
+        <p><strong>Status:</strong> <span id="modal-status"></span></p>
+        <p><strong>Created:</strong> <span id="modal-created"></span></p>
+        
+        <div id="attachments-section" style="display: none;">
+          <h4>Attachments</h4>
+          <div id="attachments-list"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="submission-attachment">Submit Your Work (File)</label>
+          <input type="file" id="submission-attachment">
+        </div>
+
+        <div class="form-group">
+          <label for="submission-note">Add Note (optional)</label>
+          <textarea id="submission-note" rows="4" placeholder="Type a note for your submission..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="task-status">Update Status</label>
+          <select id="task-status">
+            <option value="Pending">Pending</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Queries Arrived">Queries Arrived</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" onclick="submitTask()">Update Task</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="learner.js"></script>
+</body>
+</html>

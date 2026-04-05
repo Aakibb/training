@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar View - Training Management</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="navbar">
+    <div class="nav-container">
+      <h1>Training Calendar View</h1>
+      <div class="nav-links">
+        <a href="admin.html">Admin</a>
+        <a href="learner.html">Learner</a>
+        <a href="analytics.html">Analytics</a>
+        <a href="calendar.html" class="active">Calendar</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>Training & Deadline Calendar</h2>
+    <p class="subtitle">Select a user to see upcoming training sessions, next training date, and task deadlines.</p>
+
+    <div class="form-grid" style="margin-bottom: 25px; gap: 15px; align-items: center;">
+      <div class="form-group" style="flex: 1; margin-bottom: 0;">
+        <label for="calendar-user">Select User</label>
+        <select id="calendar-user">
+          <option value="Mahi">Mahi</option>
+          <option value="Saimom">Saimom</option>
+          <option value="Moushumi">Moushumi</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" id="load-calendar">Load Calendar</button>
+    </div>
+
+    <div id="calendar-summary" class="calendar-summary"></div>
+
+    <div class="legend">
+      <span class="legend-item event-training">Training Session</span>
+      <span class="legend-item event-deadline">Task Deadline</span>
+      <span class="legend-item event-queries">Queries Arrived</span>
+      <span class="legend-item event-completed">Completed Task</span>
+    </div>
+
+    <div id="calendar-events" class="calendar-grid"></div>
+  </div>
+
+  <script src="calendar.js"></script>
+</body>
+</html>

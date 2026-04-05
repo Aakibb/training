@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Training Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .dashboard-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dashboard-header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .dashboard-header .welcome-text {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    .user-info {
+      background-color: white;
+      padding: 15px 25px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .user-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .user-name {
+      font-weight: 600;
+      color: #333;
+      font-size: 16px;
+    }
+
+    .login-time {
+      font-size: 12px;
+      color: #999;
+    }
+
+    .logout-btn {
+      padding: 8px 16px;
+      background-color: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .logout-btn:hover {
+      background-color: #ee5a5a;
+      transform: translateY(-2px);
+    }
+
+    .tasks-container {
+      display: grid;
+      gap: 20px;
+    }
+
+    .quick-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .no-tasks {
+      background-color: white;
+      padding: 40px;
+      border-radius: 8px;
+      text-align: center;
+      color: #999;
+    }
+
+    .no-tasks p {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .no-tasks .icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="dashboard-header">
+      <div>
+        <h1>📚 My Training Dashboard</h1>
+        <div class="welcome-text">Welcome to your personalized training portal</div>
+      </div>
+      <div class="user-info">
+        <div class="user-avatar" id="user-avatar">M</div>
+        <div class="user-details">
+          <div class="user-name" id="user-name">Loading...</div>
+          <div class="login-time" id="login-time">Just now</div>
+        </div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <div style="margin: 20px 0; display: flex; justify-content: flex-end; gap: 10px;">
+      <a id="calendar-link" class="btn btn-secondary" href="calendar.html">View My Calendar</a>
+    </div>
+
+    <div class="quick-stats">
+      <div class="stat-card">
+        <div class="stat-label">Total Tasks</div>
+        <div class="stat-value" id="total-tasks">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Completed</div>
+        <div class="stat-value" id="completed-tasks">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pending</div>
+        <div class="stat-value" id="pending-tasks">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">In Progress</div>
+        <div class="stat-value" id="in-progress-tasks">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Average Task Time</div>
+        <div class="stat-value" id="avg-task-time">--</div>
+      </div>
+    </div>
+
+    <h2>My Tasks</h2>
+    <div id="tasks-list" class="tasks-container">
+      <div class="no-tasks">
+        <div class="icon">⏳</div>
+        <p>Loading your tasks...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for task details -->
+  <div id="task-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeTaskModal()">&times;</span>
+      <h2 id="modal-task-name"></h2>
+      <div class="modal-body">
+        <p><strong>Module:</strong> <span id="modal-module-name"></span></p>
+        <p><strong>Description:</strong> <span id="modal-description"></span></p>
+        <p><strong>Deadline:</strong> <span id="modal-deadline"></span></p>
+        <p><strong>Status:</strong> <span id="modal-status"></span></p>
+        <p><strong>Created:</strong> <span id="modal-created"></span></p>
+        <p id="modal-time-info"></p>
+        
+        <div id="attachments-section" style="display: none;">
+          <h4>Attachments</h4>
+          <div id="attachments-list"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="task-status">Update Status</label>
+          <select id="task-status">
+            <option value="Pending">Pending</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Queries Arrived">Queries Arrived</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="submission-note">Add Note (optional)</label>
+          <textarea id="submission-note" rows="4" placeholder="Type a note for your submission..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="submission-attachment">Upload Attachment (optional)</label>
+          <input type="file" id="submission-attachment">
+        </div>
+
+        <button class="btn btn-primary" onclick="updateTaskStatus()">Update Task</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentTaskId = null;
+    let currentPersonName = null;
+
+    // Check if user is logged in
+    function checkLogin() {
+      const personName = sessionStorage.getItem('learnerName');
+      if (!personName) {
+        window.location.href = 'login.html';
+        return false;
+      }
+      currentPersonName = personName;
+      
+      // Update UI with user info
+      document.getElementById('user-name').textContent = personName;
+      document.getElementById('user-avatar').textContent = personName.charAt(0).toUpperCase();
+      document.getElementById('calendar-link').href = `calendar.html?user=${encodeURIComponent(personName)}`;
+      
+      const loginTime = sessionStorage.getItem('loginTime');
+      if (loginTime) {
+        document.getElementById('login-time').textContent = 'Logged in: ' + loginTime;
+      }
+      
+      return true;
+    }
+
+    function logout() {
+      if (confirm('Are you sure you want to logout?')) {
+        sessionStorage.clear();
+        window.location.href = 'login.html';
+      }
+    }
+
+    // Load tasks for the logged-in person
+    async function loadPersonTasks() {
+      try {
+        const response = await fetch(`/api/tasks/person/${encodeURIComponent(currentPersonName)}`);
+        const tasks = await response.json();
+        
+        // Load analytics
+        const analyticsResponse = await fetch(`/api/analytics/person/${encodeURIComponent(currentPersonName)}`);
+        const analytics = await analyticsResponse.json();
+        
+        // Update stats
+        document.getElementById('total-tasks').textContent = analytics.total_tasks || 0;
+        document.getElementById('completed-tasks').textContent = analytics.completed_tasks || 0;
+        document.getElementById('pending-tasks').textContent = analytics.pending_tasks || 0;
+        document.getElementById('in-progress-tasks').textContent = analytics.in_progress_tasks || 0;
+        document.getElementById('avg-task-time').textContent = analytics.avg_days_to_complete ? analytics.avg_days_to_complete.toFixed(1) + ' days' : '--';
+        
+        // Render tasks
+        renderTasks(tasks);
+        
+      } catch (error) {
+        console.error('Error loading tasks:', error);
+        document.getElementById('tasks-list').innerHTML = '<div class="no-tasks"><div class="icon">⚠️</div><p>Error loading tasks. Please try again.</p></div>';
+      }
+    }
+
+    function renderTasks(tasks) {
+      const container = document.getElementById('tasks-list');
+      
+      if (tasks.length === 0) {
+        container.innerHTML = '<div class="no-tasks"><div class="icon">✨</div><p>No tasks assigned yet. Great job!</p></div>';
+        return;
+      }
+      
+      let html = '';
+      tasks.forEach(task => {
+        const deadline = new Date(task.deadline);
+        let statusColor = 'status-pending';
+        if (task.status === 'Completed') statusColor = 'status-completed';
+        else if (task.status === 'In Progress') statusColor = 'status-in-progress';
+        
+        const isOverdue = new Date() > deadline && task.status !== 'Completed';
+        const overdueBorder = isOverdue ? 'border-left: 4px solid #ff6b6b;' : '';
+        
+        const assignedDate = new Date(task.created_date);
+        const assignedAgo = formatDuration(Date.now() - assignedDate.getTime());
+        let timeInfo = `<p><strong>Assigned:</strong> ${assignedDate.toLocaleString()}</p>`;
+        if (task.status === 'Completed' && task.completion_date) {
+          const timeTaken = formatDuration(new Date(task.completion_date).getTime() - assignedDate.getTime());
+          timeInfo += `<p><strong>Completed in:</strong> ${timeTaken}</p>`;
+        } else {
+          timeInfo += `<p><strong>Time since assigned:</strong> ${assignedAgo}</p>`;
+        }
+
+        html += `
+          <div class="task-card" style="${overdueBorder}" onclick="openTaskModal(${task.id}, '${task.task_name}', '${task.module_name || 'N/A'}', '${task.description || ''}', '${deadline.toLocaleString()}', '${task.status}', '${task.created_date}', '${task.completion_date || ''}')">
+            <div class="task-header">
+              <span class="task-name">${task.task_name}</span>
+              <span class="task-status ${statusColor}">${task.status}${isOverdue ? ' ⚠️' : ''}</span>
+            </div>
+            <div class="task-info">
+              <p><strong>Module:</strong> ${task.module_name || 'N/A'}</p>
+              <p><strong>Deadline:</strong> ${deadline.toLocaleString()}</p>
+              ${timeInfo}
+            </div>
+            ${task.description ? `<p style="margin-top: 10px; color: #666;">${task.description}</p>` : ''}
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+    }
+
+    async function openTaskModal(taskId, taskName, moduleName, description, deadline, status, created, completionDate) {
+      currentTaskId = taskId;
+      
+      const assignedDate = new Date(created);
+      let timeInfo = `<strong>Assigned:</strong> ${assignedDate.toLocaleString()}`;
+      if (status === 'Completed' && completionDate) {
+        const completedDate = new Date(completionDate);
+        const duration = formatDuration(completedDate.getTime() - assignedDate.getTime());
+        timeInfo += `<br><strong>Completed in:</strong> ${duration}`;
+      } else {
+        const elapsed = formatDuration(Date.now() - assignedDate.getTime());
+        timeInfo += `<br><strong>Time since assignment:</strong> ${elapsed}`;
+      }
+
+      // Update modal content
+      document.getElementById('modal-task-name').textContent = taskName;
+      document.getElementById('modal-module-name').textContent = moduleName;
+      document.getElementById('modal-description').textContent = description || 'No description';
+      document.getElementById('modal-deadline').textContent = deadline;
+      document.getElementById('modal-status').textContent = status;
+      document.getElementById('modal-created').textContent = assignedDate.toLocaleString();
+      document.getElementById('modal-time-info').innerHTML = timeInfo;
+      
+      // Reset submission inputs
+      document.getElementById('submission-note').value = '';
+      document.getElementById('submission-attachment').value = '';
+      
+      // Load task attachments
+      await loadTaskAttachments(taskId);
+      
+      // Update status dropdown
+      document.getElementById('task-status').value = status;
+      
+      // Show modal
+      document.getElementById('task-modal').classList.add('show');
+    }
+
+    async function loadTaskAttachments(taskId) {
+      try {
+        const response = await fetch(`/api/tasks/${taskId}/attachments`);
+        const attachments = await response.json();
+        
+        const section = document.getElementById('attachments-section');
+        const list = document.getElementById('attachments-list');
+        
+        if (attachments.length === 0) {
+          section.style.display = 'none';
+          return;
+        }
+        
+        section.style.display = 'block';
+        let html = '';
+        attachments.forEach(attachment => {
+          html += `
+            <div class="attachment">
+              <a href="${attachment.file_path}" download="${attachment.file_name}" title="Download">📎 ${attachment.file_name}</a>
+            </div>
+          `;
+        });
+        list.innerHTML = html;
+      } catch (error) {
+        console.error('Error loading attachments:', error);
+      }
+    }
+
+    function closeTaskModal() {
+      document.getElementById('task-modal').classList.remove('show');
+    }
+
+    function formatDuration(milliseconds) {
+      const seconds = Math.floor(milliseconds / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
+      const remainingHours = hours % 24;
+      const remainingMinutes = minutes % 60;
+      const remainingSeconds = seconds % 60;
+
+      if (days > 0) {
+        return `${days}d ${remainingHours}h ${remainingMinutes}m`;
+      }
+      if (hours > 0) {
+        return `${hours}h ${remainingMinutes}m`;
+      }
+      if (minutes > 0) {
+        return `${minutes}m ${remainingSeconds}s`;
+      }
+      return `${remainingSeconds}s`;
+    }
+
+    async function updateTaskStatus() {
+      if (!currentTaskId) return;
+      
+      const status = document.getElementById('task-status').value;
+      const completion_date = status === 'Completed' ? new Date().toISOString() : null;
+      const note = document.getElementById('submission-note').value.trim();
+      const attachment = document.getElementById('submission-attachment').files[0];
+
+      try {
+        const formData = new FormData();
+        formData.append('status', status);
+        if (completion_date) {
+          formData.append('completion_date', completion_date);
+        }
+        if (note) {
+          formData.append('note', note);
+        }
+        if (attachment) {
+          formData.append('submission_attachment', attachment);
+        }
+        formData.append('submitted_by', currentPersonName);
+
+        const response = await fetch(`/api/tasks/${currentTaskId}/submit`, {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (response.ok) {
+          alert('✓ Task submitted successfully!');
+          closeTaskModal();
+          loadPersonTasks();
+        } else {
+          alert('Error submitting task');
+        }
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('task-modal');
+      if (event.target == modal) {
+        closeTaskModal();
+      }
+    }
+
+    // Initialize on page load
+    window.addEventListener('load', () => {
+      if (checkLogin()) {
+        loadPersonTasks();
+        // Refresh every 30 seconds to show updates
+        setInterval(loadPersonTasks, 30000);
+      }
+    });
+  </script>
+</body>
+</html>

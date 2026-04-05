@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics Dashboard - Training Management System</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="navbar">
+    <div class="nav-container">
+      <h1>Training Management System - Analytics Dashboard</h1>
+      <div class="nav-links">
+        <a href="admin.html">Admin</a>
+        <a href="learner.html">Learner</a>
+        <a href="analytics.html" class="active">Analytics</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>Training Overview</h2>
+    
+    <div class="dashboard-stats">
+      <div class="stat-card">
+        <h3>Total Training Sessions</h3>
+        <p class="stat-number" id="total-sessions">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Total Tasks Completed</h3>
+        <p class="stat-number" id="completed-tasks-total">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Queries Arrived</h3>
+        <p class="stat-number" id="queries-arrived-total">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Team Members</h3>
+        <p class="stat-number">3</p>
+      </div>
+      <div class="stat-card">
+        <h3>Avg Completion Time</h3>
+        <p class="stat-number" id="avg-completion-time">--</p>
+      </div>
+      <div class="stat-card">
+        <h3>Avg Status Update Time</h3>
+        <p class="stat-number" id="avg-update-time">--</p>
+      </div>
+    </div>
+
+    <h2>Team Performance</h2>
+    
+    <div class="analytics-grid">
+      <div class="chart-container">
+        <h3>Tasks by Person</h3>
+        <canvas id="tasksChart"></canvas>
+      </div>
+
+      <div class="chart-container">
+        <h3>Completion Rate by Person</h3>
+        <canvas id="completionChart"></canvas>
+      </div>
+    </div>
+
+    <h2>Individual Performance</h2>
+    
+    <div class="person-analytics">
+      <div class="person-card">
+        <h3>Mahi</h3>
+        <div class="person-stats">
+          <p>Total Tasks: <span id="mahi-total">0</span></p>
+          <p>Completed: <span id="mahi-completed">0</span></p>
+          <p>Pending: <span id="mahi-pending">0</span></p>
+          <p>In Progress: <span id="mahi-in-progress">0</span></p>
+          <p>Queries Arrived: <span id="mahi-queries">0</span></p>
+          <p>Avg Days to Complete: <span id="mahi-avg-days">--</span></p>
+          <p>Avg Status Update Time: <span id="mahi-status-update-days">--</span></p>
+        </div>
+      </div>
+
+      <div class="person-card">
+        <h3>Saimom</h3>
+        <div class="person-stats">
+          <p>Total Tasks: <span id="saimom-total">0</span></p>
+          <p>Completed: <span id="saimom-completed">0</span></p>
+          <p>Pending: <span id="saimom-pending">0</span></p>
+          <p>In Progress: <span id="saimom-in-progress">0</span></p>
+          <p>Queries Arrived: <span id="saimom-queries">0</span></p>
+          <p>Avg Days to Complete: <span id="saimom-avg-days">--</span></p>
+          <p>Avg Status Update Time: <span id="saimom-status-update-days">--</span></p>
+        </div>
+      </div>
+
+      <div class="person-card">
+        <h3>Moushumi</h3>
+        <div class="person-stats">
+          <p>Total Tasks: <span id="moushumi-total">0</span></p>
+          <p>Completed: <span id="moushumi-completed">0</span></p>
+          <p>Pending: <span id="moushumi-pending">0</span></p>
+          <p>In Progress: <span id="moushumi-in-progress">0</span></p>
+          <p>Queries Arrived: <span id="moushumi-queries">0</span></p>
+          <p>Avg Days to Complete: <span id="moushumi-avg-days">--</span></p>
+          <p>Avg Status Update Time: <span id="moushumi-status-update-days">--</span></p>
+        </div>
+      </div>
+    </div>
+
+    <h2>All Tasks Overview</h2>
+    <div id="tasks-overview" class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Task Name</th>
+            <th>Module</th>
+            <th>Assigned To</th>
+            <th>Deadline</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tasks-table-body">
+          <tr><td colspan="5">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="analytics.js"></script>
+</body>
+</html>

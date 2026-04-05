@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Training Portal - Login</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 50px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      color: #667eea;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 40px;
+      font-size: 16px;
+    }
+
+    .instruction {
+      background-color: #f5f9ff;
+      border-left: 4px solid #667eea;
+      padding: 15px;
+      margin-bottom: 30px;
+      text-align: left;
+      border-radius: 4px;
+    }
+
+    .instruction p {
+      color: #555;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .instruction strong {
+      color: #333;
+    }
+
+    .person-buttons {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .person-btn {
+      padding: 18px 24px;
+      border: 2px solid #667eea;
+      background-color: white;
+      color: #667eea;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .person-btn:hover {
+      background-color: #667eea;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .person-btn:active {
+      transform: translateY(0);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 30px 0;
+      color: #ddd;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background-color: #ddd;
+    }
+
+    .divider span {
+      padding: 0 15px;
+      color: #999;
+      font-size: 14px;
+    }
+
+    .custom-section {
+      background-color: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    .custom-section label {
+      display: block;
+      margin-bottom: 10px;
+      color: #333;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .custom-section input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    .custom-section input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .custom-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #667eea;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .custom-btn:hover {
+      background-color: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .footer {
+      color: #999;
+      font-size: 13px;
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .footer a {
+      color: #667eea;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Alert styling */
+    .alert {
+      padding: 12px;
+      background-color: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 4px;
+      color: #856404;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 500px) {
+      .login-container {
+        padding: 30px 20px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .person-btn {
+        padding: 16px 20px;
+        font-size: 15px;
+      }
+
+      .logo {
+        font-size: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo">📚</div>
+    <h1>Training Portal</h1>
+    <p class="subtitle">Select your name to view your tasks</p>
+
+    <div class="instruction">
+      <p><strong>Quick Access:</strong> Click your name below to log in instantly. No password needed!</p>
+    </div>
+
+    <div id="alert-container"></div>
+
+    <div class="person-buttons">
+      <button class="person-btn" onclick="loginAsPerson('Mahi')">👤 Mahi</button>
+      <button class="person-btn" onclick="loginAsPerson('Saimom')">👤 Saimom</button>
+      <button class="person-btn" onclick="loginAsPerson('Moushumi')">👤 Moushumi</button>
+    </div>
+
+    <div class="divider">
+      <span>OR</span>
+    </div>
+
+    <div class="custom-section">
+      <label for="custom-name">Enter Your Name</label>
+      <input type="text" id="custom-name" placeholder="Type your name here..." onkeypress="if(event.key === 'Enter') loginWithCustomName()">
+      <button class="custom-btn" onclick="loginWithCustomName()">Login</button>
+    </div>
+
+    <div class="footer">
+      <p>💡 <strong>Easy Access:</strong> Share this direct link with your team:</p>
+      <p style="margin-top: 10px; font-size: 14px; color: #333; word-break: break-all;">http://localhost:3000/login.html</p>
+      <p style="margin-top: 10px; font-size: 12px;">
+        Need Admin Access? <a href="admin.html">Go to Admin Panel</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    function loginAsPerson(personName) {
+      // Store the name in browser memory
+      sessionStorage.setItem('learnerName', personName);
+      sessionStorage.setItem('loginTime', new Date().toLocaleString());
+      
+      // Redirect to learner dashboard
+      window.location.href = 'learner-dashboard.html';
+    }
+
+    function loginWithCustomName() {
+      const customName = document.getElementById('custom-name').value.trim();
+      
+      if (!customName) {
+        showAlert('Please enter your name');
+        return;
+      }
+
+      if (customName.length < 2) {
+        showAlert('Please enter a valid name');
+        return;
+      }
+
+      loginAsPerson(customName);
+    }
+
+    function showAlert(message) {
+      const alertContainer = document.getElementById('alert-container');
+      alertContainer.innerHTML = `<div class="alert">${message}</div>`;
+      
+      setTimeout(() => {
+        alertContainer.innerHTML = '';
+      }, 3000);
+    }
+
+    // Allow form submission with Enter key
+    document.getElementById('custom-name').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        loginWithCustomName();
+      }
+    });
+  </script>
+</body>
+</html>

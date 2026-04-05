@@ -1,0 +1,7 @@
+node_modules/
+training.db
+uploads/
+.DS_Store
+*.log
+npm-debug.log*
+.env
