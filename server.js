@@ -24,8 +24,14 @@ if (!fs.existsSync(uploadsDir)) {
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('public'));
-app.use('/uploads', express.static('uploads'));
+
+const publicDir = path.join(__dirname, 'public');
+app.use(express.static(publicDir));
+app.use('/uploads', express.static(uploadsDir));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(publicDir, 'index.html'));
+});
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
