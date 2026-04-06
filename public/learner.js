@@ -1,14 +1,14 @@
 let currentPerson = null;
 let currentTaskId = null;
 
-function selectPerson(personName) {
+function selectPerson(button, personName) {
   currentPerson = personName;
   
   // Update UI
   document.querySelectorAll('.person-btn').forEach(btn => {
     btn.classList.remove('active');
   });
-  event.target.classList.add('active');
+  button.classList.add('active');
   
   // Show person content
   document.getElementById('person-content').style.display = 'block';
@@ -28,10 +28,10 @@ async function loadPersonTasks(personName) {
     const analytics = await analyticsResponse.json();
     
     // Update stats
-    document.getElementById('total-tasks').textContent = analytics[0]?.total_tasks || 0;
-    document.getElementById('completed-tasks').textContent = analytics[0]?.completed_tasks || 0;
-    document.getElementById('pending-tasks').textContent = analytics[0]?.pending_tasks || 0;
-    document.getElementById('in-progress-tasks').textContent = analytics[0]?.in_progress_tasks || 0;
+    document.getElementById('total-tasks').textContent = analytics.total_tasks || 0;
+    document.getElementById('completed-tasks').textContent = analytics.completed_tasks || 0;
+    document.getElementById('pending-tasks').textContent = analytics.pending_tasks || 0;
+    document.getElementById('in-progress-tasks').textContent = analytics.in_progress_tasks || 0;
     
     // Render tasks
     renderAllTasks(tasks);
@@ -138,7 +138,7 @@ function renderCompletedTasks(tasks) {
   container.innerHTML = html;
 }
 
-function switchTaskTab(tabName) {
+function switchTaskTab(event, tabName) {
   const tabs = document.querySelectorAll('.tab-content');
   const buttons = document.querySelectorAll('.tab-button');
   
@@ -146,7 +146,7 @@ function switchTaskTab(tabName) {
   buttons.forEach(btn => btn.classList.remove('active'));
   
   document.getElementById(tabName).classList.add('active');
-  event.target.classList.add('active');
+  event.currentTarget.classList.add('active');
 }
 
 async function openTaskModal(taskId, taskName, moduleName, description, deadline, status, created) {

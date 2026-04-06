@@ -22,9 +22,9 @@
     <div class="learner-section">
       <h2>Select Your Name</h2>
       <div class="person-selector">
-        <button class="person-btn" onclick="selectPerson('Mahi')">Mahi</button>
-        <button class="person-btn" onclick="selectPerson('Saimom')">Saimom</button>
-        <button class="person-btn" onclick="selectPerson('Moushumi')">Moushumi</button>
+        <button class="person-btn" onclick="selectPerson(this, 'Mahi')">Mahi</button>
+        <button class="person-btn" onclick="selectPerson(this, 'Saimom')">Saimom</button>
+        <button class="person-btn" onclick="selectPerson(this, 'Moushumi')">Moushumi</button>
       </div>
 
       <div id="person-content" style="display: none;">
@@ -50,9 +50,9 @@
         </div>
 
         <div class="tabs">
-          <button class="tab-button active" onclick="switchTaskTab('all-tasks')">All Tasks</button>
-          <button class="tab-button" onclick="switchTaskTab('pending-tasks')">Pending</button>
-          <button class="tab-button" onclick="switchTaskTab('completed-tasks')">Completed</button>
+          <button class="tab-button active" onclick="switchTaskTab(event, 'all-tasks')">All Tasks</button>
+          <button class="tab-button" onclick="switchTaskTab(event, 'pending-tasks')">Pending</button>
+          <button class="tab-button" onclick="switchTaskTab(event, 'completed-tasks')">Completed</button>
         </div>
 
         <div id="all-tasks" class="tab-content active">

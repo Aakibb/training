@@ -387,16 +387,17 @@ app.get('/api/tasks', (req, res) => {
 
 // Get tasks for specific person
 app.get('/api/tasks/person/:person_name', (req, res) => {
-  const personName = req.params.person_name;
+  const personName = req.params.person_name.trim();
+  const normalizedName = ',' + personName.replace(/\s+/g, '') + ',';
   const query = `
     SELECT t.*, ts.session_date, lp.module_name
     FROM tasks t
     LEFT JOIN training_sessions ts ON t.session_id = ts.id
     LEFT JOIN learning_points lp ON ts.learning_point_id = lp.id
-    WHERE t.assigned_to LIKE ?
+    WHERE ',' || REPLACE(t.assigned_to, ' ', '') || ',' LIKE ?
     ORDER BY t.deadline ASC
   `;
-  db.all(query, ['%' + personName + '%'], (err, rows) => {
+  db.all(query, ['%' + normalizedName + '%'], (err, rows) => {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
@@ -549,7 +550,8 @@ app.get('/api/analytics/dashboard', (req, res) => {
 
 // Get person's analytics
 app.get('/api/analytics/person/:person_name', (req, res) => {
-  const personName = req.params.person_name;
+  const personName = req.params.person_name.trim();
+  const normalizedName = ',' + personName.replace(/\s+/g, '') + ',';
   
   db.all(`
     SELECT 
@@ -561,8 +563,8 @@ app.get('/api/analytics/person/:person_name', (req, res) => {
       AVG(CASE WHEN status = 'Completed' THEN julianday(completion_date) - julianday(created_date) END) as avg_days_to_complete,
       AVG(CASE WHEN last_status_update IS NOT NULL THEN julianday(last_status_update) - julianday(created_date) END) as avg_status_update_days
     FROM tasks
-    WHERE assigned_to LIKE ?
-  `, ['%' + personName + '%'], (err, stats) => {
+    WHERE ',' || REPLACE(assigned_to, ' ', '') || ',' LIKE ?
+  `, ['%' + normalizedName + '%'], (err, stats) => {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
