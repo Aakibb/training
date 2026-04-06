@@ -332,53 +332,58 @@ async function addParticipant(sessionId, participantName) {
 
 // ===== TASKS =====
 
-document.getElementById('task-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
+function setupTaskForm() {
+  const taskForm = document.getElementById('task-form');
+  if (!taskForm) return;
   
-  const session_id = document.getElementById('session_id').value;
-  const task_name = document.getElementById('task_name').value;
-  const description = document.getElementById('task_description').value;
-  const deadline = document.getElementById('deadline').value;
-  const assignedToSelect = document.getElementById('assigned_to');
-  const selectedUsers = Array.from(assignedToSelect.selectedOptions).map(option => option.value);
-  const assigned_to = selectedUsers.join(', ');
-  const attachment = document.getElementById('task_attachment').files[0];
-  
-  if (!task_name || !deadline || selectedUsers.length === 0) {
-    alert('Please fill in all required fields and select at least one person');
-    return;
-  }
-  
-  const formData = new FormData();
-  if (session_id) {
-    formData.append('session_id', session_id);
-  }
-  formData.append('task_name', task_name);
-  formData.append('description', description);
-  formData.append('deadline', deadline);
-  formData.append('assigned_to', assigned_to);
-  if (attachment) {
-    formData.append('attachment', attachment);
-  }
-  
-  try {
-    const response = await fetch('/api/tasks', {
-      method: 'POST',
-      body: formData
-    });
+  taskForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
     
-    const data = await response.json();
-    if (response.ok) {
-      alert('Task created successfully!');
-      document.getElementById('task-form').reset();
-      loadTasks();
-    } else {
-      alert('Error: ' + data.error);
+    const session_id = document.getElementById('session_id').value;
+    const task_name = document.getElementById('task_name').value;
+    const description = document.getElementById('task_description').value;
+    const deadline = document.getElementById('deadline').value;
+    const assignedToSelect = document.getElementById('assigned_to');
+    const selectedUsers = Array.from(assignedToSelect.selectedOptions).map(option => option.value);
+    const assigned_to = selectedUsers.join(', ');
+    const attachment = document.getElementById('task_attachment').files[0];
+    
+    if (!task_name || !deadline || selectedUsers.length === 0) {
+      alert('Please fill in all required fields and select at least one person');
+      return;
     }
-  } catch (error) {
-    alert('Error: ' + error.message);
-  }
-});
+    
+    const formData = new FormData();
+    if (session_id) {
+      formData.append('session_id', session_id);
+    }
+    formData.append('task_name', task_name);
+    formData.append('description', description);
+    formData.append('deadline', deadline);
+    formData.append('assigned_to', assigned_to);
+    if (attachment) {
+      formData.append('attachment', attachment);
+    }
+    
+    try {
+      const response = await fetch('/api/tasks', {
+        method: 'POST',
+        body: formData
+      });
+      
+      const data = await response.json();
+      if (response.ok) {
+        alert('Task created successfully!');
+        document.getElementById('task-form').reset();
+        loadTasks();
+      } else {
+        alert('Error: ' + data.error);
+      }
+    } catch (error) {
+      alert('Error: ' + error.message);
+    }
+  });
+}
 
 async function loadTasks() {
   try {
@@ -423,6 +428,9 @@ async function loadTasks() {
 
 window.addEventListener('load', () => {
   loadLearningPoints();
+  setupTaskForm();
+  loadTrainingSessionsForTaskDropdown();
+  loadTasks();
 });
 
 // Close modal when clicking outside
