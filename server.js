@@ -95,8 +95,8 @@ db.serialize(() => {
   )`);
 
   // Fix schema for existing table if session_id is still NOT NULL
-  db.get(`PRAGMA table_info(tasks)`, [], (err, columns) => {
-    if (!err) {
+  db.all(`PRAGMA table_info(tasks)`, [], (err, columns) => {
+    if (!err && Array.isArray(columns)) {
       const sessionColumn = columns.find(col => col.name === 'session_id');
       if (sessionColumn && sessionColumn.notnull === 1) {
         db.serialize(() => {
@@ -124,8 +124,8 @@ db.serialize(() => {
   });
 
   // Add last_status_update column if missing
-  db.get(`PRAGMA table_info(tasks)`, [], (err, columns) => {
-    if (!err && !columns.some(col => col.name === 'last_status_update')) {
+  db.all(`PRAGMA table_info(tasks)`, [], (err, columns) => {
+    if (!err && Array.isArray(columns) && !columns.some(col => col.name === 'last_status_update')) {
       db.run('ALTER TABLE tasks ADD COLUMN last_status_update DATETIME');
     }
   });
