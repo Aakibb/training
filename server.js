@@ -1,17 +1,24 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const os = require('os');
 const multer = require('multer');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, 'uploads');
+const rootDir = process.env.VERCEL ? path.join(os.tmpdir(), 'training-management-system') : __dirname;
+const uploadsDir = path.join(rootDir, 'uploads');
+const dbPath = path.join(rootDir, 'training.db');
+
+if (!fs.existsSync(rootDir)) {
+  fs.mkdirSync(rootDir, { recursive: true });
+}
+
 if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir);
+  fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
 // Middleware
@@ -32,7 +39,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Database setup
-const db = new sqlite3.Database('./training.db', (err) => {
+const db = new sqlite3.Database(dbPath, (err) => {
   if (err) console.error(err);
   else console.log('Connected to SQLite database');
 });
@@ -558,14 +565,18 @@ app.get('/api/analytics/person/:person_name', (req, res) => {
   });
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`\n========================================`);
-  console.log(`Training Management System is running!`);
-  console.log(`\nOpen your browser and go to:`);
-  console.log(`http://localhost:${PORT}`);
-  console.log(`\nAdmin Panel: http://localhost:${PORT}/admin.html`);
-  console.log(`Learner Login: http://localhost:${PORT}/login.html`);
-  console.log(`Analytics: http://localhost:${PORT}/analytics.html`);
-  console.log(`========================================\n`);
-});
+// Start server when running locally
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`\n========================================`);
+    console.log(`Training Management System is running!`);
+    console.log(`\nOpen your browser and go to:`);
+    console.log(`http://localhost:${PORT}`);
+    console.log(`\nAdmin Panel: http://localhost:${PORT}/admin.html`);
+    console.log(`Learner Login: http://localhost:${PORT}/login.html`);
+    console.log(`Analytics: http://localhost:${PORT}/analytics.html`);
+    console.log(`========================================\n`);
+  });
+}
+
+module.exports = app;
