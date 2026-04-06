@@ -23,43 +23,48 @@ function switchTab(tabName) {
 
 // ===== LEARNING POINTS =====
 
-document.getElementById('learning-point-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
+function setupLearningPointForm() {
+  const form = document.getElementById('learning-point-form');
+  if (!form) return;
   
-  const typeSelect = document.getElementById('type');
-  const selectedTypes = Array.from(typeSelect.selectedOptions).map(option => option.value);
-  const module_name = document.getElementById('module_name').value;
-  const description = document.getElementById('description').value;
-  
-  if (selectedTypes.length === 0 || !module_name) {
-    alert('Please select at least one type and fill in module name');
-    return;
-  }
-  
-  const type = selectedTypes.join(', ');
-  
-  try {
-    const response = await fetch('/api/learning-points', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ type, module_name, description })
-    });
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
     
-    const data = await response.json();
-    if (response.ok) {
-      alert('Learning Point created successfully!');
-      document.getElementById('learning-point-form').reset();
-      loadLearningPoints();
-      loadLearningPointsForDropdown();
-    } else {
-      alert('Error: ' + data.error);
+    const typeSelect = document.getElementById('type');
+    const selectedTypes = Array.from(typeSelect.selectedOptions).map(option => option.value);
+    const module_name = document.getElementById('module_name').value;
+    const description = document.getElementById('description').value;
+    
+    if (selectedTypes.length === 0 || !module_name) {
+      alert('Please select at least one type and fill in module name');
+      return;
     }
-  } catch (error) {
-    alert('Error: ' + error.message);
-  }
-});
+    
+    const type = selectedTypes.join(', ');
+    
+    try {
+      const response = await fetch('/api/learning-points', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ type, module_name, description })
+      });
+      
+      const data = await response.json();
+      if (response.ok) {
+        alert('Learning Point created successfully!');
+        document.getElementById('learning-point-form').reset();
+        loadLearningPoints();
+        loadLearningPointsForDropdown();
+      } else {
+        alert('Error: ' + data.error);
+      }
+    } catch (error) {
+      alert('Error: ' + error.message);
+    }
+  });
+}
 
 async function loadLearningPoints() {
   try {
@@ -135,39 +140,44 @@ async function loadLearningPointsForDropdown() {
 
 // ===== TRAINING SESSIONS =====
 
-document.getElementById('training-session-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
+function setupTrainingSessionForm() {
+  const form = document.getElementById('training-session-form');
+  if (!form) return;
   
-  const learning_point_id = document.getElementById('learning_point_id').value;
-  const session_date = document.getElementById('session_date').value;
-  
-  if (!learning_point_id || !session_date) {
-    alert('Please fill in all required fields');
-    return;
-  }
-  
-  try {
-    const response = await fetch('/api/training-sessions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ learning_point_id, session_date })
-    });
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
     
-    const data = await response.json();
-    if (response.ok) {
-      alert('Training Session created successfully!');
-      document.getElementById('training-session-form').reset();
-      loadTrainingSessions();
-      loadTrainingSessionsForTaskDropdown();
-    } else {
-      alert('Error: ' + data.error);
+    const learning_point_id = document.getElementById('learning_point_id').value;
+    const session_date = document.getElementById('session_date').value;
+    
+    if (!learning_point_id || !session_date) {
+      alert('Please fill in all required fields');
+      return;
     }
-  } catch (error) {
-    alert('Error: ' + error.message);
-  }
-});
+    
+    try {
+      const response = await fetch('/api/training-sessions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ learning_point_id, session_date })
+      });
+      
+      const data = await response.json();
+      if (response.ok) {
+        alert('Training Session created successfully!');
+        document.getElementById('training-session-form').reset();
+        loadTrainingSessions();
+        loadTrainingSessionsForTaskDropdown();
+      } else {
+        alert('Error: ' + data.error);
+      }
+    } catch (error) {
+      alert('Error: ' + error.message);
+    }
+  });
+}
 
 async function loadTrainingSessions() {
   try {
@@ -427,7 +437,11 @@ async function loadTasks() {
 }
 
 window.addEventListener('load', () => {
+  setupLearningPointForm();
   loadLearningPoints();
+  setupTrainingSessionForm();
+  loadTrainingSessions();
+  loadLearningPointsForDropdown();
   setupTaskForm();
   loadTrainingSessionsForTaskDropdown();
   loadTasks();
