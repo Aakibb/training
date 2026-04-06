@@ -544,6 +544,163 @@ h3 {
   min-width: 200px;
 }
 
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.month-grid {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 25px;
+}
+
+.month-row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.month-header {
+  font-weight: 700;
+  text-align: center;
+}
+
+.day-label {
+  padding: 10px 12px;
+  text-align: center;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+  color: #555;
+}
+
+.month-cell {
+  min-height: 110px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.month-cell:hover {
+  transform: translateY(-1px);
+  border-color: #667eea;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.08);
+}
+
+.month-cell.inactive {
+  background: transparent;
+  border: none;
+  cursor: default;
+}
+
+.month-cell.today {
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.15);
+}
+
+.month-cell.has-events {
+  background: #f8fbff;
+}
+
+.date-number {
+  font-weight: 700;
+  color: #333;
+}
+
+.day-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.day-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.day-dot.training {
+  background-color: #667eea;
+}
+
+.day-dot.deadline {
+  background-color: #f59e0b;
+}
+
+.more-events {
+  margin-top: auto;
+  font-size: 12px;
+  color: #555;
+  text-align: right;
+}
+
+.day-details {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.details-list {
+  display: grid;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.details-card {
+  background: #f8f9ff;
+  border: 1px solid #dfe4ff;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.details-card.training {
+  border-color: #667eea;
+}
+
+.details-card.deadline {
+  border-color: #f59e0b;
+}
+
+.details-card .details-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.details-card p {
+  color: #444;
+  margin: 0 0 8px;
+}
+
+.details-card .details-type {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  background-color: #e9ecef;
+  color: #495057;
+}
+
 .loading-state {
   text-align: center;
   padding: 40px;

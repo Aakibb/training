@@ -55,7 +55,14 @@
       <span class="legend-item event-completed">✅ Completed Task</span>
     </div>
 
-    <div id="calendar-events" class="calendar-grid"></div>
+    <div class="calendar-header">
+      <button class="btn btn-secondary" id="prev-month">←</button>
+      <h3 id="current-month-label"></h3>
+      <button class="btn btn-secondary" id="next-month">→</button>
+    </div>
+
+    <div id="calendar-grid" class="month-grid"></div>
+    <div id="calendar-day-details" class="day-details"></div>
   </div>
 
   <script src="calendar.js"></script>

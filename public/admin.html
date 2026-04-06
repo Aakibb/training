@@ -20,6 +20,41 @@
   </div>
 
   <div class="container">
+    <div id="admin-summary" class="stats-container">
+      <div class="stat-card">
+        <h3>Total Sessions</h3>
+        <p id="admin-total-sessions">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Upcoming Sessions</h3>
+        <p id="admin-upcoming-sessions">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Past Sessions</h3>
+        <p id="admin-past-sessions">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Total Tasks</h3>
+        <p id="admin-total-tasks">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Completed</h3>
+        <p id="admin-completed-tasks">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>In Progress</h3>
+        <p id="admin-in-progress-tasks">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Pending</h3>
+        <p id="admin-pending-tasks">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Queries</h3>
+        <p id="admin-queries-tasks">0</p>
+      </div>
+    </div>
+
     <div class="tabs">
       <button class="tab-button active" onclick="switchTab('learning-points')">Learning Points</button>
       <button class="tab-button" onclick="switchTab('training-sessions')">Training Sessions</button>
@@ -129,6 +164,11 @@
 
         <button type="submit" class="btn btn-primary">Create Task</button>
       </form>
+
+      <h3>Recent Task Status Updates</h3>
+      <div id="task-updates-list" class="list-container">
+        <p>Loading latest task updates...</p>
+      </div>
 
       <h3>All Tasks</h3>
       <div id="tasks-list" class="list-container">

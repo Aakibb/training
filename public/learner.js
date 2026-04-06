@@ -20,27 +20,36 @@ function selectPerson(button, personName) {
 
 async function loadPersonTasks(personName) {
   try {
-    const response = await fetch(`/api/tasks/person/${personName}`);
-    const tasks = await response.json();
-    
-    // Load analytics
-    const analyticsResponse = await fetch(`/api/analytics/person/${personName}`);
+    const [tasksResponse, analyticsResponse, sessionsResponse] = await Promise.all([
+      fetch(`/api/tasks/person/${personName}`),
+      fetch(`/api/analytics/person/${personName}`),
+      fetch(`/api/training-sessions/person/${personName}`)
+    ]);
+
+    const tasks = await tasksResponse.json();
     const analytics = await analyticsResponse.json();
-    
+    const sessions = await sessionsResponse.json();
+
+    const today = new Date();
+    const upcomingSessions = sessions.filter(session => new Date(session.session_date) > today).length;
+    const pastSessions = sessions.filter(session => new Date(session.session_date) <= today).length;
+
     // Update stats
     document.getElementById('total-tasks').textContent = analytics.total_tasks || 0;
     document.getElementById('completed-tasks').textContent = analytics.completed_tasks || 0;
     document.getElementById('pending-tasks').textContent = analytics.pending_tasks || 0;
     document.getElementById('in-progress-tasks').textContent = analytics.in_progress_tasks || 0;
     document.getElementById('queries-tasks').textContent = analytics.queries_arrived_tasks || 0;
-    
+    document.getElementById('learner-upcoming-sessions').textContent = upcomingSessions;
+    document.getElementById('learner-past-sessions').textContent = pastSessions;
+
     // Render tasks
     renderAllTasks(tasks);
     renderPendingTasks(tasks);
     renderInProgressTasks(tasks);
     renderQueriesTasks(tasks);
     renderCompletedTasks(tasks);
-    
+
   } catch (error) {
     console.error('Error loading person tasks:', error);
   }

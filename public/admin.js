@@ -17,6 +17,7 @@ function switchTab(tabName) {
     loadLearningPointsForDropdown();
   } else if (tabName === 'tasks') {
     loadTasks();
+    loadTaskUpdates();
     loadTrainingSessionsForTaskDropdown();
   }
 }
@@ -170,6 +171,7 @@ function setupTrainingSessionForm() {
         document.getElementById('training-session-form').reset();
         loadTrainingSessions();
         loadTrainingSessionsForTaskDropdown();
+        loadAdminSummary();
       } else {
         alert('Error: ' + data.error);
       }
@@ -386,6 +388,7 @@ function setupTaskForm() {
         alert('Task created successfully!');
         document.getElementById('task-form').reset();
         loadTasks();
+        loadAdminSummary();
       } else {
         alert('Error: ' + data.error);
       }
@@ -422,6 +425,7 @@ async function loadTasks() {
             <p><strong>Assigned To:</strong> ${task.assigned_to}</p>
             <p><strong>Deadline:</strong> ${deadline.toLocaleString()}</p>
             ${task.description ? `<p><strong>Description:</strong> ${task.description}</p>` : ''}
+            ${task.last_status_update ? `<p><strong>Last update:</strong> ${new Date(task.last_status_update).toLocaleString()}</p>` : ''}
           </div>
           <div class="item-actions">
             <span class="task-status ${statusColor}">${task.status}</span>
@@ -436,6 +440,77 @@ async function loadTasks() {
   }
 }
 
+async function loadTaskUpdates() {
+  try {
+    const response = await fetch('/api/tasks');
+    const tasks = await response.json();
+    const updates = tasks
+      .filter(task => task.last_status_update)
+      .sort((a, b) => new Date(b.last_status_update) - new Date(a.last_status_update))
+      .slice(0, 10);
+
+    const container = document.getElementById('task-updates-list');
+    if (updates.length === 0) {
+      container.innerHTML = '<p>No recent task updates yet.</p>';
+      return;
+    }
+
+    let html = '';
+    updates.forEach(update => {
+      const updatedAt = new Date(update.last_status_update);
+      html += `
+        <div class="item update-item">
+          <div class="item-content">
+            <h4>${update.task_name}</h4>
+            <p><strong>Status:</strong> ${update.status}</p>
+            <p><strong>Assigned To:</strong> ${update.assigned_to}</p>
+            <p><strong>Updated:</strong> ${updatedAt.toLocaleString()}</p>
+            ${update.submitted_by ? `<p><strong>Submitted by:</strong> ${update.submitted_by}</p>` : ''}
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+  } catch (error) {
+    console.error('Error loading task updates:', error);
+  }
+}
+
+async function loadAdminSummary() {
+  try {
+    const [sessionsResp, tasksResp] = await Promise.all([
+      fetch('/api/training-sessions'),
+      fetch('/api/tasks')
+    ]);
+
+    const sessions = await sessionsResp.json();
+    const tasks = await tasksResp.json();
+    const today = new Date();
+
+    const totalSessions = sessions.length;
+    const upcomingSessions = sessions.filter(session => new Date(session.session_date) > today).length;
+    const pastSessions = sessions.filter(session => new Date(session.session_date) <= today).length;
+
+    const totalTasks = tasks.length;
+    const completedTasks = tasks.filter(task => task.status === 'Completed').length;
+    const inProgressTasks = tasks.filter(task => task.status === 'In Progress').length;
+    const pendingTasks = tasks.filter(task => task.status === 'Pending').length;
+    const queriesTasks = tasks.filter(task => task.status === 'Queries Arrived').length;
+
+    document.getElementById('admin-total-sessions').textContent = totalSessions;
+    document.getElementById('admin-upcoming-sessions').textContent = upcomingSessions;
+    document.getElementById('admin-past-sessions').textContent = pastSessions;
+    document.getElementById('admin-total-tasks').textContent = totalTasks;
+    document.getElementById('admin-completed-tasks').textContent = completedTasks;
+    document.getElementById('admin-in-progress-tasks').textContent = inProgressTasks;
+    document.getElementById('admin-pending-tasks').textContent = pendingTasks;
+    document.getElementById('admin-queries-tasks').textContent = queriesTasks;
+  } catch (error) {
+    console.error('Error loading admin summary:', error);
+  }
+}
+
 window.addEventListener('load', () => {
   setupLearningPointForm();
   loadLearningPoints();
@@ -445,6 +520,8 @@ window.addEventListener('load', () => {
   setupTaskForm();
   loadTrainingSessionsForTaskDropdown();
   loadTasks();
+  loadTaskUpdates();
+  loadAdminSummary();
 });
 
 // Close modal when clicking outside
