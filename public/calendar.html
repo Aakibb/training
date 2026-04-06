@@ -21,15 +21,24 @@
 
   <div class="container">
     <h2>Training & Deadline Calendar</h2>
-    <p class="subtitle">Select a user to see upcoming training sessions, next training date, and task deadlines.</p>
+    <p class="subtitle">Select a user or choose All Users to see training sessions, task deadlines, and everyone's calendar together.</p>
 
-    <div class="form-grid" style="margin-bottom: 25px; gap: 15px; align-items: center;">
-      <div class="form-group" style="flex: 1; margin-bottom: 0;">
+    <div class="form-grid" style="margin-bottom: 25px; gap: 15px; align-items: center; flex-wrap: wrap;">
+      <div class="form-group" style="flex: 1; min-width: 220px; margin-bottom: 0;">
         <label for="calendar-user">Select User</label>
         <select id="calendar-user">
+          <option value="all">All Users</option>
           <option value="Mahi">Mahi</option>
           <option value="Saimom">Saimom</option>
           <option value="Moushumi">Moushumi</option>
+        </select>
+      </div>
+      <div class="form-group" style="flex: 1; min-width: 220px; margin-bottom: 0;">
+        <label for="calendar-filter">Show</label>
+        <select id="calendar-filter">
+          <option value="all">All Events</option>
+          <option value="training">Training Sessions Only</option>
+          <option value="tasks">Task Deadlines Only</option>
         </select>
       </div>
       <button class="btn btn-primary" id="load-calendar">Load Calendar</button>

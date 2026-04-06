@@ -1,31 +1,43 @@
 const urlParams = new URLSearchParams(window.location.search);
 const defaultUsers = ["Mahi", "Saimom", "Moushumi"];
 const calendarUserSelect = document.getElementById("calendar-user");
+const calendarFilterSelect = document.getElementById("calendar-filter");
 const calendarSummary = document.getElementById("calendar-summary");
 const calendarEvents = document.getElementById("calendar-events");
 const loadCalendarButton = document.getElementById("load-calendar");
 
 function initCalendarPage() {
   const queryUser = urlParams.get("user");
-  if (queryUser && defaultUsers.includes(queryUser)) {
+  if (queryUser && (queryUser === "all" || defaultUsers.includes(queryUser))) {
     calendarUserSelect.value = queryUser;
   }
 
   loadCalendarButton.addEventListener("click", () => {
-    loadCalendarForUser(calendarUserSelect.value);
+    loadCalendarForUser(calendarUserSelect.value, calendarFilterSelect.value);
   });
 
-  loadCalendarForUser(calendarUserSelect.value);
+  calendarFilterSelect.addEventListener("change", () => {
+    loadCalendarForUser(calendarUserSelect.value, calendarFilterSelect.value);
+  });
+
+  loadCalendarForUser(calendarUserSelect.value, calendarFilterSelect.value);
 }
 
-async function loadCalendarForUser(userName) {
+async function loadCalendarForUser(userName, filter) {
   calendarSummary.innerHTML = "<p>Loading calendar...</p>";
   calendarEvents.innerHTML = "";
 
   try {
+    const sessionUrl = userName === "all"
+      ? "/api/training-sessions"
+      : `/api/training-sessions/person/${encodeURIComponent(userName)}`;
+    const taskUrl = userName === "all"
+      ? "/api/tasks"
+      : `/api/tasks/person/${encodeURIComponent(userName)}`;
+
     const [sessions, tasks] = await Promise.all([
-      fetch(`/api/training-sessions/person/${encodeURIComponent(userName)}`),
-      fetch(`/api/tasks/person/${encodeURIComponent(userName)}`)
+      fetch(sessionUrl),
+      fetch(taskUrl)
     ]);
 
     if (!sessions.ok || !tasks.ok) {
@@ -35,13 +47,13 @@ async function loadCalendarForUser(userName) {
     const sessionsData = await sessions.json();
     const tasksData = await tasks.json();
 
-    renderCalendar(userName, sessionsData, tasksData);
+    renderCalendar(userName, filter, sessionsData, tasksData);
   } catch (error) {
     calendarSummary.innerHTML = `<p class="error-message">${error.message}</p>`;
   }
 }
 
-function renderCalendar(userName, sessions, tasks) {
+function renderCalendar(userName, filter, sessions, tasks) {
   if (!Array.isArray(sessions)) {
     sessions = [];
   }
@@ -65,11 +77,17 @@ function renderCalendar(userName, sessions, tasks) {
 
   const totalSessions = sessions.length;
   const totalTasks = tasks.length;
+  const selectedUserLabel = userName === "all" ? "Everyone" : userName;
+  const selectedFilterLabel = filter === "training" ? "Training sessions" : filter === "tasks" ? "Task deadlines" : "All events";
 
   calendarSummary.innerHTML = `
     <div class="calendar-card">
-      <strong>User</strong>
-      <span>${userName}</span>
+      <strong>View</strong>
+      <span>${selectedUserLabel}</span>
+    </div>
+    <div class="calendar-card">
+      <strong>Showing</strong>
+      <span>${selectedFilterLabel}</span>
     </div>
     <div class="calendar-card">
       <strong>Next training date</strong>
@@ -89,46 +107,58 @@ function renderCalendar(userName, sessions, tasks) {
     </div>
   `;
 
-  if (!sessions.length && !tasks.length) {
-    calendarEvents.innerHTML = `<p class="empty-state">No training sessions or tasks found for ${userName}.</p>`;
-    return;
+  if ((!sessions.length && filter !== "tasks") || (!tasks.length && filter !== "training")) {
+    const hasAny = (filter === "training" ? sessions.length : filter === "tasks" ? tasks.length : sessions.length + tasks.length);
+    if (!hasAny) {
+      calendarEvents.innerHTML = `<p class="empty-state">No ${filter === "training" ? "training sessions" : filter === "tasks" ? "task deadlines" : "events"} found for ${selectedUserLabel}.</p>`;
+      return;
+    }
   }
 
   const eventsByDate = {};
 
-  sessions.forEach((session) => {
-    const dateKey = formatDate(session.date, "yyyy-mm-dd");
-    if (!eventsByDate[dateKey]) {
-      eventsByDate[dateKey] = [];
-    }
-    eventsByDate[dateKey].push({
-      type: "training",
-      date: session.date,
-      title: session.module_name || `Session ${session.id}`,
-      details: `Training session for ${session.type || 'module'}`,
-      status: "training"
+  if (filter !== "tasks") {
+    sessions.forEach((session) => {
+      const dateKey = formatDate(new Date(session.session_date), "yyyy-mm-dd");
+      if (!eventsByDate[dateKey]) {
+        eventsByDate[dateKey] = [];
+      }
+      eventsByDate[dateKey].push({
+        type: "training",
+        date: new Date(session.session_date),
+        title: session.module_name || `Session ${session.id}`,
+        details: `Training session for ${session.type || 'module'}`,
+        status: "training"
+      });
     });
-  });
+  }
 
-  tasks.forEach((task) => {
-    const deadlineDate = new Date(task.deadline);
-    if (isNaN(deadlineDate.getTime())) {
-      return;
-    }
-    const dateKey = formatDate(deadlineDate, "yyyy-mm-dd");
-    if (!eventsByDate[dateKey]) {
-      eventsByDate[dateKey] = [];
-    }
-    eventsByDate[dateKey].push({
-      type: "deadline",
-      date: deadlineDate,
-      title: task.task_name || `Task ${task.id}`,
-      details: `${task.status || "Pending"}${task.completion_date ? ` · due ${formatDate(deadlineDate)}` : ``}`,
-      status: task.status || "Pending"
+  if (filter !== "training") {
+    tasks.forEach((task) => {
+      const deadlineDate = new Date(task.deadline);
+      if (isNaN(deadlineDate.getTime())) {
+        return;
+      }
+      const dateKey = formatDate(deadlineDate, "yyyy-mm-dd");
+      if (!eventsByDate[dateKey]) {
+        eventsByDate[dateKey] = [];
+      }
+      eventsByDate[dateKey].push({
+        type: "deadline",
+        date: deadlineDate,
+        title: task.task_name || `Task ${task.id}`,
+        details: `${task.status || "Pending"}${task.completion_date ? ` · due ${formatDate(deadlineDate)}` : ``}`,
+        status: task.status || "Pending"
+      });
     });
-  });
+  }
 
   const sortedDates = Object.keys(eventsByDate).sort((a, b) => new Date(a) - new Date(b));
+  if (!sortedDates.length) {
+    calendarEvents.innerHTML = `<p class="empty-state">No ${filter === "training" ? "training sessions" : filter === "tasks" ? "task deadlines" : "events"} found for ${selectedUserLabel}.</p>`;
+    return;
+  }
+
   calendarEvents.innerHTML = sortedDates.map((dateKey) => {
     const events = eventsByDate[dateKey].sort((a, b) => a.date - b.date);
     return `
