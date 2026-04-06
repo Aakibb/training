@@ -212,6 +212,18 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(publicDir, 'index.html'));
 });
 
+app.get('/learner-login', (req, res) => {
+  res.sendFile(path.join(publicDir, 'login.html'));
+});
+
+app.get('/learner', (req, res) => {
+  res.sendFile(path.join(publicDir, 'login.html'));
+});
+
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(publicDir, 'admin.html'));
+});
+
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
