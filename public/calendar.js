@@ -24,7 +24,7 @@ function initCalendarPage() {
 }
 
 async function loadCalendarForUser(userName, filter) {
-  calendarSummary.innerHTML = "<p>Loading calendar...</p>";
+  calendarSummary.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Loading calendar data...</p></div>';
   calendarEvents.innerHTML = "";
 
   try {
@@ -49,7 +49,7 @@ async function loadCalendarForUser(userName, filter) {
 
     renderCalendar(userName, filter, sessionsData, tasksData);
   } catch (error) {
-    calendarSummary.innerHTML = `<p class="error-message">${error.message}</p>`;
+    calendarSummary.innerHTML = `<div class="error-message">❌ Error loading calendar: ${error.message}</div>`;
   }
 }
 
@@ -77,40 +77,43 @@ function renderCalendar(userName, filter, sessions, tasks) {
 
   const totalSessions = sessions.length;
   const totalTasks = tasks.length;
-  const selectedUserLabel = userName === "all" ? "Everyone" : userName;
-  const selectedFilterLabel = filter === "training" ? "Training sessions" : filter === "tasks" ? "Task deadlines" : "All events";
+  const selectedUserLabel = userName === "all" ? "👥 Everyone" : `👤 ${userName}`;
+  const selectedFilterLabel = filter === "training" ? "🎓 Training sessions" : filter === "tasks" ? "📝 Task deadlines" : "📋 All events";
+
+  const upcomingSessions = futureSessions.length;
+  const upcomingDeadlines = allDeadlines.filter(task => task.deadline >= today).length;
 
   calendarSummary.innerHTML = `
     <div class="calendar-card">
-      <strong>View</strong>
+      <strong>👀 Viewing</strong>
       <span>${selectedUserLabel}</span>
     </div>
     <div class="calendar-card">
-      <strong>Showing</strong>
+      <strong>🔍 Filter</strong>
       <span>${selectedFilterLabel}</span>
     </div>
     <div class="calendar-card">
-      <strong>Next training date</strong>
+      <strong>🎓 Next Training</strong>
       <span>${nextTraining ? formatDate(nextTraining) : "No upcoming training"}</span>
     </div>
     <div class="calendar-card">
-      <strong>Next deadline</strong>
+      <strong>⏰ Next Deadline</strong>
       <span>${nextDeadline ? formatDate(nextDeadline) : "No deadlines found"}</span>
     </div>
     <div class="calendar-card">
-      <strong>Total sessions</strong>
-      <span>${totalSessions}</span>
+      <strong>📊 Total Sessions</strong>
+      <span>${totalSessions} (${upcomingSessions} upcoming)</span>
     </div>
     <div class="calendar-card">
-      <strong>Total tasks</strong>
-      <span>${totalTasks}</span>
+      <strong>📋 Total Tasks</strong>
+      <span>${totalTasks} (${upcomingDeadlines} upcoming)</span>
     </div>
   `;
 
   if ((!sessions.length && filter !== "tasks") || (!tasks.length && filter !== "training")) {
     const hasAny = (filter === "training" ? sessions.length : filter === "tasks" ? tasks.length : sessions.length + tasks.length);
     if (!hasAny) {
-      calendarEvents.innerHTML = `<p class="empty-state">No ${filter === "training" ? "training sessions" : filter === "tasks" ? "task deadlines" : "events"} found for ${selectedUserLabel}.</p>`;
+      calendarEvents.innerHTML = `<div class="empty-state">📭 No ${filter === "training" ? "training sessions" : filter === "tasks" ? "task deadlines" : "events"} found for ${selectedUserLabel.replace(/👥 |👤 /g, '')}.</div>`;
       return;
     }
   }
@@ -127,8 +130,10 @@ function renderCalendar(userName, filter, sessions, tasks) {
         type: "training",
         date: new Date(session.session_date),
         title: session.module_name || `Session ${session.id}`,
-        details: `Training session for ${session.type || 'module'}`,
-        status: "training"
+        details: `🎓 Training session for ${session.type || 'module'}`,
+        status: "training",
+        time: formatTime(new Date(session.session_date)),
+        participants: session.participants ? session.participants.length : 0
       });
     });
   }
@@ -143,29 +148,36 @@ function renderCalendar(userName, filter, sessions, tasks) {
       if (!eventsByDate[dateKey]) {
         eventsByDate[dateKey] = [];
       }
+      const isOverdue = deadlineDate < today && task.status !== 'Completed';
       eventsByDate[dateKey].push({
         type: "deadline",
         date: deadlineDate,
         title: task.task_name || `Task ${task.id}`,
-        details: `${task.status || "Pending"}${task.completion_date ? ` · due ${formatDate(deadlineDate)}` : ``}`,
-        status: task.status || "Pending"
+        details: `${task.status || "Pending"} • Assigned to: ${task.assigned_to} • Module: ${task.module_name || 'N/A'}${isOverdue ? ' ⚠️ OVERDUE' : ''}`,
+        status: task.status || "Pending",
+        time: formatTime(deadlineDate),
+        priority: isOverdue ? 'high' : 'normal'
       });
     });
   }
 
   const sortedDates = Object.keys(eventsByDate).sort((a, b) => new Date(a) - new Date(b));
   if (!sortedDates.length) {
-    calendarEvents.innerHTML = `<p class="empty-state">No ${filter === "training" ? "training sessions" : filter === "tasks" ? "task deadlines" : "events"} found for ${selectedUserLabel}.</p>`;
+    calendarEvents.innerHTML = `<div class="empty-state">📭 No ${filter === "training" ? "training sessions" : filter === "tasks" ? "task deadlines" : "events"} found for ${selectedUserLabel.replace(/👥 |👤 /g, '')}.</div>`;
     return;
   }
 
   calendarEvents.innerHTML = sortedDates.map((dateKey) => {
     const events = eventsByDate[dateKey].sort((a, b) => a.date - b.date);
+    const dateObj = new Date(dateKey);
+    const isToday = dateObj.toDateString() === today.toDateString();
+    const isPast = dateObj < today;
+
     return `
-      <section class="calendar-day">
+      <section class="calendar-day ${isToday ? 'today' : ''} ${isPast ? 'past' : ''}">
         <div class="calendar-day-header">
-          <span>${formatDate(new Date(dateKey))}</span>
-          <span>${events.length} event${events.length !== 1 ? "s" : ""}</span>
+          <span class="date-display">${isToday ? '📅 Today - ' : ''}${formatDate(new Date(dateKey))}</span>
+          <span class="event-count">${events.length} event${events.length !== 1 ? "s" : ""}</span>
         </div>
         ${events
           .map((event) => {
@@ -175,12 +187,18 @@ function renderCalendar(userName, filter, sessions, tasks) {
                 ? "event-queries"
                 : event.status === "Completed"
                   ? "event-completed"
-                  : "event-deadline";
+                  : event.priority === 'high'
+                    ? "event-overdue"
+                    : "event-deadline";
 
             return `
               <article class="event-card ${statusClass}">
-                <div class="event-card-title">${event.title}</div>
+                <div class="event-card-header">
+                  <div class="event-card-title">${event.title}</div>
+                  <div class="event-card-time">${event.time}</div>
+                </div>
                 <div class="event-card-details">${event.details}</div>
+                ${event.participants !== undefined ? `<div class="event-participants">👥 ${event.participants} participant${event.participants !== 1 ? 's' : ''}</div>` : ''}
               </article>
             `;
           })
@@ -197,6 +215,18 @@ function formatDuration(seconds) {
   const minutes = Math.floor(seconds / 60);
   const remaining = seconds % 60;
   return `${minutes}m ${remaining}s`;
+}
+
+function formatTime(date) {
+  const d = new Date(date);
+  if (isNaN(d.getTime())) {
+    return "";
+  }
+  return d.toLocaleTimeString(undefined, {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
 }
 
 function formatDate(date, format = "medium") {
