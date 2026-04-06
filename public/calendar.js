@@ -5,6 +5,10 @@ const calendarFilterSelect = document.getElementById("calendar-filter");
 const calendarSummary = document.getElementById("calendar-summary");
 const calendarGrid = document.getElementById("calendar-grid");
 const calendarDayDetails = document.getElementById("calendar-day-details");
+const popupModal = document.getElementById("day-popup");
+const popupClose = document.getElementById("popup-close");
+const popupHeader = document.getElementById("popup-header");
+const popupBody = document.getElementById("popup-body");
 const loadCalendarButton = document.getElementById("load-calendar");
 const prevMonthBtn = document.getElementById("prev-month");
 const nextMonthBtn = document.getElementById("next-month");
@@ -24,6 +28,12 @@ function initCalendarPage() {
   nextMonthBtn.addEventListener("click", () => changeMonth(1));
   loadCalendarButton.addEventListener("click", () => loadCalendarForUser(calendarUserSelect.value, calendarFilterSelect.value));
   calendarFilterSelect.addEventListener("change", () => loadCalendarForUser(calendarUserSelect.value, calendarFilterSelect.value));
+  popupClose.addEventListener("click", closePopup);
+  popupModal.addEventListener("click", (event) => {
+    if (event.target === popupModal) {
+      closePopup();
+    }
+  });
 
   loadCalendarForUser(calendarUserSelect.value, calendarFilterSelect.value);
 }
@@ -226,7 +236,12 @@ function renderMonthGrid(eventsByDate) {
 
     const cell = document.createElement('div');
     cell.className = `month-cell ${isToday ? 'today' : ''} ${events.length ? 'has-events' : ''}`;
-    if (events.length) cell.addEventListener('click', () => selectDay(dateKey, events));
+    if (events.length) {
+      cell.addEventListener('click', () => {
+        selectDay(dateKey, events);
+        openPopup(dateKey, events);
+      });
+    }
 
     const dayNumber = document.createElement('div');
     dayNumber.className = 'date-number';
@@ -267,6 +282,27 @@ function renderMonthGrid(eventsByDate) {
 function selectDay(dateKey, events) {
   selectedDayKey = dateKey;
   renderDayDetails(dateKey, events);
+}
+
+function openPopup(dateKey, events) {
+  if (!dateKey || !events || !events.length) {
+    return;
+  }
+
+  popupHeader.textContent = `Details for ${formatDisplayDate(new Date(dateKey))}`;
+  popupBody.innerHTML = events.map(event => `
+    <div class="popup-event ${event.type}">
+      <h4>${event.title}</h4>
+      <p>${event.details}</p>
+      <p class="event-meta">${event.time} • ${event.type === 'training' ? 'Training Session' : 'Task Deadline'}</p>
+    </div>
+  `).join('');
+
+  popupModal.classList.add('show');
+}
+
+function closePopup() {
+  popupModal.classList.remove('show');
 }
 
 function renderDayDetails(dateKey, events) {
