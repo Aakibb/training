@@ -32,10 +32,13 @@ async function loadPersonTasks(personName) {
     document.getElementById('completed-tasks').textContent = analytics.completed_tasks || 0;
     document.getElementById('pending-tasks').textContent = analytics.pending_tasks || 0;
     document.getElementById('in-progress-tasks').textContent = analytics.in_progress_tasks || 0;
+    document.getElementById('queries-tasks').textContent = analytics.queries_arrived_tasks || 0;
     
     // Render tasks
     renderAllTasks(tasks);
     renderPendingTasks(tasks);
+    renderInProgressTasks(tasks);
+    renderQueriesTasks(tasks);
     renderCompletedTasks(tasks);
     
   } catch (error) {
@@ -94,6 +97,64 @@ function renderPendingTasks(tasks) {
         <div class="task-header">
           <span class="task-name">${task.task_name}</span>
           <span class="task-status status-pending">${task.status}</span>
+        </div>
+        <div class="task-info">
+          <p><strong>Module:</strong> ${task.module_name || 'N/A'}</p>
+          <p><strong>Deadline:</strong> ${deadline.toLocaleString()}</p>
+        </div>
+      </div>
+    `;
+  });
+  
+  container.innerHTML = html;
+}
+
+function renderInProgressTasks(tasks) {
+  const inProgressTasks = tasks.filter(t => t.status === 'In Progress');
+  const container = document.getElementById('in-progress-tasks-list');
+  
+  if (inProgressTasks.length === 0) {
+    container.innerHTML = '<p>No in progress tasks</p>';
+    return;
+  }
+  
+  let html = '';
+  inProgressTasks.forEach(task => {
+    const deadline = new Date(task.deadline);
+    html += `
+      <div class="task-card" onclick="openTaskModal(${task.id}, '${task.task_name}', '${task.module_name || 'N/A'}', '${task.description || ''}', '${deadline.toLocaleString()}', '${task.status}', '${task.created_date}')">
+        <div class="task-header">
+          <span class="task-name">${task.task_name}</span>
+          <span class="task-status status-in-progress">${task.status}</span>
+        </div>
+        <div class="task-info">
+          <p><strong>Module:</strong> ${task.module_name || 'N/A'}</p>
+          <p><strong>Deadline:</strong> ${deadline.toLocaleString()}</p>
+        </div>
+      </div>
+    `;
+  });
+  
+  container.innerHTML = html;
+}
+
+function renderQueriesTasks(tasks) {
+  const queriesTasks = tasks.filter(t => t.status === 'Queries Arrived');
+  const container = document.getElementById('queries-tasks-list');
+  
+  if (queriesTasks.length === 0) {
+    container.innerHTML = '<p>No queried tasks</p>';
+    return;
+  }
+  
+  let html = '';
+  queriesTasks.forEach(task => {
+    const deadline = new Date(task.deadline);
+    html += `
+      <div class="task-card" onclick="openTaskModal(${task.id}, '${task.task_name}', '${task.module_name || 'N/A'}', '${task.description || ''}', '${deadline.toLocaleString()}', '${task.status}', '${task.created_date}')">
+        <div class="task-header">
+          <span class="task-name">${task.task_name}</span>
+          <span class="task-status status-queries">${task.status}</span>
         </div>
         <div class="task-info">
           <p><strong>Module:</strong> ${task.module_name || 'N/A'}</p>
